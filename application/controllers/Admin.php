@@ -7,25 +7,6 @@ class Admin extends CI_Controller {
 		$this->_make_sure_is_admin();
 		$this->load->view('admin/dashboard');
 	}
-	public function login($username,$password){
-		$userModel = new \App\Models\Mdl_admin();
-		$admin_data = $userModel->get_cipherpass($username);
-		if ($admin_data != NULL) {
-			if($this->bcrypt->verify($password, $admin_data['password'])){
-				$data_login = [
-					'nama' => $admin_data['nama_depan'].' '.$admin_data['nama_belakang'],
-					'user' => $admin_data['username'],
-					'level' => $admin_data['level'],
-					'status'=> TRUE
-				];
-				$this->session->set('login_data', $data_login);
-			}else{
-				$this->session->setFlashData("gagal", "Login Failed!");
-			}
-		}else {
-			$this->session->setFlashData("gagal", "Login Failed!");
-		}
-	}
 	function register(){
 
 	}

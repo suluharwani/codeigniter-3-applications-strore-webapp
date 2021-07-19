@@ -4,8 +4,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Admin extends CI_Controller {
 	public function index()
 	{
-		$this->_make_sure_is_admin();
-		$this->load->view('admin/dashboard');
+		if ($this->_make_sure_is_admin()) {
+			$this->load->view('admin/dashboard');
+		}else{
+			$this->load->view('login');
+
+		}		
 	}
 	function register(){
 

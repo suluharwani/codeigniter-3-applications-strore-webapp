@@ -64,7 +64,18 @@
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Logged in as:</div>
-                        Start Bootstrap
+                        <?php
+                        if (null!==$nama_admin) {
+                            if ($level==1) {
+                                echo('Super Admin - ');
+                            }else if($level == 2){
+                                echo('Admin - ');
+                            }else{
+                                echo('unregistered');
+                            }
+                            echo($nama_admin);
+                        }
+                        ?>
                     </div>
                 </nav>
             </div>

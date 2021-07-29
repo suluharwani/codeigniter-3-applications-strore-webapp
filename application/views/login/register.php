@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Login - SB Admin</title>
+    <title>Register</title>
     <link href="<?=base_url('assets/startbootstrap/')?>css/styles.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     <script src="<?=base_url('assets/jquery.js')?>"></script>
@@ -19,19 +19,26 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-5">
                             <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Register</h3></div>
                                 <div class="card-body">
                                     <form>
                                         <div class="form-floating mb-3">
                                             <input class="form-control" id="username" type="text" placeholder="Username" name="username" />
                                             <label for="username">Username</label>
+                                            <span id="username_result" ></span>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" type="password" id="password" placeholder="Password" />
+                                            <input class="form-control" id="inputPassword" type="password" placeholder="Password min 8 character" />
                                             <label for="inputPassword">Password</label>
+                                            <span id="password_result" ></span>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputRepeatPassword" type="password" placeholder="Password" />
+                                            <label for="inputRepeatPassword">Repeat Password</label>
+                                            <span id="password_confirm" ></span>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <a class="btn btn-primary" id="login_button">Login</a>
+                                            <a id="register" class="btn btn-primary" >Register</a>
                                         </div>
                                     </form>
                                 </div>
@@ -65,47 +72,86 @@
     <!-- check -->
     <script type="text/javascript">
      $(document).ready(function(){
-         $('#login_button').on('click',function(){
+        $('#username').change(function(){
+           var username = $('#username').val();
+           if(username != ''){
+              $.ajax({
+                url: "<?php echo base_url(); ?>login/check_username",
+                method: "POST",
+                data: {username:username},
+                success: function(data){
+                  $('#username_result').html(data);
+              }
+          });
+          }
+      });
+        $('#inputPassword').keyup(function(){
+           var password = $('#inputPassword').val();
+           if(password != ''){
+              $.ajax({
+                url: "<?php echo base_url(); ?>login/check_password",
+                method: "POST",
+                data: {password:password},
+                success: function(data){
+                  $('#password_result').html(data);
+              }
+          });
+          }
+      });
+        $('#inputRepeatPassword').keyup(function(){
+           var password = $('#inputPassword').val();
+           var repeatpassword = $('#inputRepeatPassword').val();
+           if(repeatpassword != ''){
+              $.ajax({
+                url: "<?php echo base_url(); ?>login/check_confirm_password",
+                method: "POST",
+                data: {password:password,repeatpassword:repeatpassword},
+                success: function(data){
+                  $('#password_confirm').html(data);
+              }
+          });
+          }
+      });
+        //register
+        $('#register').on('click',function(){
           var username = $('#username').val();
-          var password =$('#password').val();
+          var password1 =$('#inputPassword').val();
+          var password2 = $('#inputRepeatPassword').val();
           $.ajax({
             type : "POST",
-            url  : "<?php echo site_url('login/logadmin')?>",
+            url  : "<?php echo site_url('login/daftar_admin')?>",
             dataType : "JSON",
-            data : {username:username, password:password},
+            data : {username:username, password1:password1, password2:password2},
             success: function(response){
-                let timerInterval
-
-Swal.fire({
-  title: 'Login Sukses, menuju halaman admin!',
-  html:'',
-  timer: 3000,
-  showConfirmButton: false,
-  willOpen: () => {
-    Swal.showLoading()
-  },
-  willClose: () => {
-    clearInterval(timerInterval);
-    window.location.replace("<?=base_url('admin')?>");
-
-  }
-})
-             
+             Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: response.message,
+                showConfirmButton: false,
+                timer: 4500,
+                footer: '<a href="<?=base_url('login')?>">Login Sekarang?</a>'
+            })
+             setTimeout(function () { 
+                location.reload(1); 
+            }, 
+            5000
+            );
          },
-         error: (function(xhr, status, error) {
-             var err = JSON.parse(xhr.responseText);
+         error: (function(data) {
           Swal.fire({
               icon: 'error',
               title: 'Oops...',
-              text: err.message,
+              text: 'Gagal melakukan registrasi!',
               showConfirmButton: false,
-              timer: 4000
+              timer: 1500
           })
       })
      });
           return false;
       });
+        //end
     });
+
 </script>
 </body>
 </html>
